@@ -9,3 +9,7 @@ The code is organized in 5 functions :
  - main : configures web app, defines useful variables, connects and runs previous functions and displays results (image's prediction and accuracy)
 
 Dataset source : https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia
+
+App links :
+ - Github : https://github.com/gabgrge/chest_xray
+ - Streamlit Cloud : https://gabgrge-chest-xray-main-tdrfgk.streamlitapp.com/
