@@ -11,7 +11,7 @@ from keras.models import Sequential
 @st.cache
 def load_data(class_names_label, IMAGE_SIZE):
     DIRECTORY = 'data'
-    CATEGORY = ['train', 'test', 'val']
+    CATEGORY = ['train', 'test']
 
     output = []
 
@@ -42,16 +42,15 @@ def load_data(class_names_label, IMAGE_SIZE):
 
 
 @st.cache
-def normalize(train_images, test_images, val_images):
+def normalize(train_images, test_images):
     train_images = np.array(train_images) / 255
     test_images = np.array(test_images) / 255
-    val_images = np.array(val_images) / 255
 
-    return train_images, test_images, val_images
+    return train_images, test_images
 
 
 @st.cache(allow_output_mutation=True)
-def build_model(train_images, train_labels, test_images, test_labels, val_images, val_labels, epoch):
+def build_model(train_images, train_labels, test_images, test_labels, epoch):
     model = Sequential([
         layers.Input(shape=train_images.shape[1:]),
         layers.Flatten(),
@@ -63,7 +62,7 @@ def build_model(train_images, train_labels, test_images, test_labels, val_images
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
 
-    model.fit(train_images, train_labels, validation_data=(val_images, val_labels), epochs=epoch)
+    model.fit(train_images, train_labels, validation_split=0.2, epochs=epoch)
 
     accuracy = model.evaluate(test_images, test_labels, verbose=2)[1]
 
@@ -96,14 +95,13 @@ def main():
     IMAGE_SIZE = (180, 180)
 
     # Load data
-    (train_images, train_labels), (test_images, test_labels), \
-    (val_images, val_labels) = load_data(class_names_label, IMAGE_SIZE)
+    (train_images, train_labels), (test_images, test_labels) = load_data(class_names_label, IMAGE_SIZE)
 
     # Normalize data
-    train_images, test_images, val_images = normalize(train_images, test_images, val_images)
+    train_images, test_images = normalize(train_images, test_images)
 
     # Build model & get accuracy
-    mdl, acc = build_model(train_images, train_labels, test_images, test_labels, val_images, val_labels, 2)
+    mdl, acc = build_model(train_images, train_labels, test_images, test_labels, 2)
 
     # Load & predict image
     uploaded_file = st.file_uploader("Choose an image (JPEG format only)", 'jpeg')

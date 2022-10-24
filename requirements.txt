@@ -1,6 +1,0 @@
-numpy
-opencv-python-headless
-tensorflow
-tensorboard
-streamlit
-protobuf
