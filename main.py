@@ -51,7 +51,7 @@ def normalize(train_images, test_images, val_images):
 
 
 @st.cache(allow_output_mutation=True)
-def build_model(train_images, train_labels, test_images, test_labels, epoch):
+def build_model(train_images, train_labels, test_images, test_labels, val_images, val_labels, epoch):
     model = Sequential([
         layers.Input(shape=train_images.shape[1:]),
         layers.Flatten(),
@@ -63,7 +63,7 @@ def build_model(train_images, train_labels, test_images, test_labels, epoch):
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
 
-    model.fit(train_images, train_labels, epochs=epoch)
+    model.fit(train_images, train_labels, validation_data=(val_images, val_labels), epochs=epoch)
 
     accuracy = model.evaluate(test_images, test_labels, verbose=2)[1]
 
@@ -103,7 +103,7 @@ def main():
     train_images, test_images, val_images = normalize(train_images, test_images, val_images)
 
     # Build model & get accuracy
-    mdl, acc = build_model(train_images, train_labels, test_images, test_labels, 2)
+    mdl, acc = build_model(train_images, train_labels, test_images, test_labels, val_images, val_labels, 2)
 
     # Load & predict image
     uploaded_file = st.file_uploader("Choose an image (JPEG format only)", 'jpeg')
